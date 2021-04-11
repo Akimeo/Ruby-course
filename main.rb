@@ -26,13 +26,12 @@ class Station
 end
 
 class Route
-  attr_reader :initial, :terminal, :station_list, :train_list
+  attr_reader :initial, :terminal, :station_list
 
   def initialize(initial, terminal)
-    @initial = Station.new(initial)
-    @terminal = Station.new(terminal)
+    @initial = initial
+    @terminal = terminal
     @station_list = []
-    @train_list = []
   end
 
   def add_station(station)
@@ -41,14 +40,6 @@ class Route
 
   def remove_station(station)
     station_list.delete(station)
-  end
-
-  def add_train(train)
-    train_list.push(train)
-  end
-
-  def remove_train(train)
-    train_list.delete(train)
   end
 
   def full_list
@@ -86,29 +77,28 @@ class Train
 
   def set_route(route)
     self.route = route
-    self.route.add_train(self)
-    self.route.initial.get_train(self)
     self.route_pos = 0
+    current_station.get_train(self)
   end
 
   def move_next
-    return nil if route.full_list[route_pos] == route.terminal
+    return unless next_station
 
-    route.full_list[route_pos].send_train(self)
+    current_station.send_train(self)
     self.route_pos += 1
-    route.full_list[route_pos].get_train(self)
+    current_station.get_train(self)
   end
 
   def move_previous
-    return nil if route.full_list[route_pos] == route.initial
+    return unless previous_station
 
-    route.full_list[route_pos].send_train(self)
+    current_station.send_train(self)
     self.route_pos -= 1
-    route.full_list[route_pos].get_train(self)
+    current_station.get_train(self)
   end
 
   def next_station
-    return nil if route.full_list[route_pos] == route.terminal
+    return if current_station == route.terminal
 
     route.full_list[route_pos + 1]
   end
@@ -118,7 +108,7 @@ class Train
   end
 
   def previous_station
-    return nil if route_pos.zero?
+    return if current_station == route.initial
 
     route.full_list[route_pos - 1]
   end
