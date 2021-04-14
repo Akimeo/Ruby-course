@@ -9,3 +9,6 @@ require_relative 'car'
 require_relative 'cargo_car'
 require_relative 'passenger_car'
 require_relative 'rail_road'
+
+rr = RailRoad.new
+rr.greeting

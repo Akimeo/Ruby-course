@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class Train
-  attr_accessor :speed, :car_list, :route, :route_pos
+  attr_reader :number, :car_list
+  attr_accessor :speed
 
   def initialize(number)
     @number = number
@@ -17,8 +18,8 @@ class Train
     car_list.push(car) if speed.zero?
   end
 
-  def remove_car(car)
-    car_list.delete(car) if speed.zero?
+  def remove_car
+    car_list.pop if speed.zero?
   end
 
   def car_quantity
@@ -62,4 +63,9 @@ class Train
 
     route.full_list[route_pos - 1]
   end
+
+  protected
+
+  attr_accessor :route, :route_pos # Пользователь не должен вручную менять
+  # маршрут или положение поезда
 end
