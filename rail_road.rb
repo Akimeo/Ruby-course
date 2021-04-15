@@ -177,7 +177,7 @@ class RailRoad
     input = gets.chomp.to_i
     case input
     when 1
-      if train.is_a? CargoTrain
+      if train.type == :cargo
         train.add_car(CargoCar.new)
       else
         train.add_car(PassengerCar.new)

@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class CargoTrain < Train
-  def add_car(car)
-    super if car.is_a? CargoCar
+  def initialize(number)
+    super
+    @type = :cargo
   end
 end
