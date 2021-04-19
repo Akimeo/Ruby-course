@@ -11,6 +11,10 @@ module InstanceCounter
       @instances ||= 0
     end
 
+    def increase_instances
+      self.instances += 1
+    end
+
     protected
 
     attr_writer :instances
@@ -20,8 +24,7 @@ module InstanceCounter
     protected
 
     def register_instance
-      self.class.instances ||= 0
-      self.class.send :instances=, self.class.instances + 1
+      self.class.increase_instances
     end
   end
 end
