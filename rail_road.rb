@@ -36,6 +36,8 @@ class RailRoad
       seed
     when 0
       nil
+    else
+      user_call
     end
   end
 
@@ -50,8 +52,8 @@ class RailRoad
       print_stations
     when 3
       print_trains
-    when 0
-      nil
+    else
+      station_action
     end
   end
 
@@ -98,6 +100,8 @@ class RailRoad
       add_station
     when 3
       remove_station
+    else
+      route_action
     end
   end
 
@@ -147,6 +151,8 @@ class RailRoad
       car_action
     when 4
       move_train
+    else
+      train_action
     end
   end
 
@@ -158,10 +164,16 @@ class RailRoad
     case input
     when 1
       trains.push(CargoTrain.new(number))
+      puts "Грузовой поезд №#{number} успешно создан."
     when 2
       trains.push(PassengerTrain.new(number))
+      puts "Пассажирский поезд №#{number} успешно создан."
+    else
+      puts 'Тип поезда не был указан.'
     end
-    puts "Поезд №#{number} успешно создан."
+  rescue StandardError => e
+    puts e.message
+  ensure
     user_call
   end
 
@@ -184,6 +196,8 @@ class RailRoad
       end
     when 2
       train.remove_car
+    else
+      car_action
     end
     puts "У поезда №#{train.number} теперь #{train.car_quantity} вагон(а/ов)."
     user_call
@@ -212,6 +226,8 @@ class RailRoad
         puts "Поезд №#{train.number} не перемещен, так как находится " \
              'на начальной станции.'
       end
+    else
+      move_train
     end
     user_call
   end
@@ -224,11 +240,11 @@ class RailRoad
 
   def seed
     trains.clear
-    (1..5).each do |i|
-      trains.push(CargoTrain.new(i.to_s))
+    (0..4).each do |i|
+      trains.push(CargoTrain.new('0000' + i.to_s))
     end
-    (6..10).each do |i|
-      trains.push(PassengerTrain.new(i.to_s))
+    (5..9).each do |i|
+      trains.push(PassengerTrain.new('0000' + i.to_s))
     end
     station_names = ['Измайловская', 'Партизанская', 'Семеновская',
                      'Электрозаводская', 'Бауманская', 'Парк Победы',
