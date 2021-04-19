@@ -1,13 +1,23 @@
 # frozen_string_literal: true
 
 class Train
+  include ProducerName
+  include InstanceCounter
   attr_reader :number, :type, :car_list
   attr_accessor :speed
+
+  @@train_list = []
+
+  def self.find(number)
+    @@train_list.find { |train| train.number == number }
+  end
 
   def initialize(number)
     @number = number
     @speed = 0
     @car_list = []
+    @@train_list.push(self)
+    register_instance
   end
 
   def stop

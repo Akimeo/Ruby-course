@@ -152,7 +152,7 @@ class RailRoad
 
   def create_train
     puts "\nВведите номер поезда:"
-    number = gets.chomp.to_i
+    number = gets.chomp
     puts "Выберите тип поезда:\n1. Грузовой\n2. Пассажирский"
     input = gets.chomp.to_i
     case input
@@ -218,17 +218,17 @@ class RailRoad
 
   def find_train
     puts "\nВведите номер поезда:"
-    number = gets.chomp.to_i
+    number = gets.chomp
     trains.find { |train| train.number == number }
   end
 
   def seed
     trains.clear
     (1..5).each do |i|
-      trains.push(CargoTrain.new(i))
+      trains.push(CargoTrain.new(i.to_s))
     end
     (6..10).each do |i|
-      trains.push(PassengerTrain.new(i))
+      trains.push(PassengerTrain.new(i.to_s))
     end
     station_names = ['Измайловская', 'Партизанская', 'Семеновская',
                      'Электрозаводская', 'Бауманская', 'Парк Победы',
