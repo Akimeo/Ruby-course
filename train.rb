@@ -6,6 +6,8 @@ class Train
   attr_reader :number, :type, :car_list
   attr_accessor :speed
 
+  NUMBER_FORMAT = /^[a-z0-9]{3}-?[a-z0-9]{2}$/i.freeze
+
   @@train_list = []
 
   def self.find(number)
@@ -14,10 +16,23 @@ class Train
 
   def initialize(number)
     @number = number
+    validate!
     @speed = 0
     @car_list = []
     @@train_list.push(self)
     register_instance
+  end
+
+  def validate!
+    raise 'Номер поезда должен быть строкой' unless number.is_a? String
+    raise 'Номер поезда имеет некорректный формат' if number !~ NUMBER_FORMAT
+  end
+
+  def valid?
+    validate!
+    true
+  rescue StandardError
+    false
   end
 
   def stop
