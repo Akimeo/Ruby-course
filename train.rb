@@ -89,6 +89,14 @@ class Train
     route.full_list[route_pos - 1]
   end
 
+  def each_car(&block)
+    car_list.each(&block)
+  end
+
+  def find_car(number)
+    car_list.find { |car| car.number == number }
+  end
+
   # Пользователь не должен вручную менять маршрут или положение поезда
 
   protected

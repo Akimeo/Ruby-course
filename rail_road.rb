@@ -73,14 +73,10 @@ class RailRoad
 
   def print_trains
     puts "\nВведите название станции:"
-    name = gets.chomp.capitalize
-    puts "Поезда на станции \"#{name}\":\n  Грузовые:\n"
-    find_station(name).cargo_trains.each do |train|
-      puts "    Поезд №#{train.number}"
-    end
-    puts '  Пассажирские:'
-    find_station(name).passenger_trains.each do |train|
-      puts "    Поезд №#{train.number}"
+    station = find_station(gets.chomp.capitalize)
+    station.each_train do |train|
+      puts "#{train.number} #{train.type} " \
+                                      "#{train.car_quantity}"
     end
     user_call
   end
@@ -140,7 +136,8 @@ class RailRoad
 
   def train_action
     puts "\nВыберите действие:\n1. Создать поезд\n2. Назначить маршрут " \
-         "поезду\n3. Добавить/Отцепить вагон\n4. Переместить поезд"
+         "поезду\n3. Добавить/Отцепить вагон\n4. Переместить поезд\n5. " \
+         "Вывести список вагонов у поезда\n6. Занять места/объем в вагоне"
     input = gets.chomp.to_i
     case input
     when 1
@@ -148,9 +145,13 @@ class RailRoad
     when 2
       set_route
     when 3
-      car_action
+      add_car
     when 4
       move_train
+    when 5
+      car_list
+    when 6
+      car_action
     else
       train_action
     end
@@ -183,21 +184,25 @@ class RailRoad
     user_call
   end
 
-  def car_action
+  def add_car
     train = find_train
     puts "Выберите действие:\n1. Добавить вагон\n2. Отцепить вагон"
     input = gets.chomp.to_i
     case input
     when 1
       if train.type == :cargo
-        train.add_car(CargoCar.new)
+        puts 'Укажите общий объем вагона:'
+        volume = gets.chomp.to_i
+        train.add_car(CargoCar.new(train.car_quantity + 1, volume))
       else
-        train.add_car(PassengerCar.new)
+        puts 'Укажите количество мест в вагоне:'
+        seats = gets.chomp.to_i
+        train.add_car(PassengerCar.new(train.car_quantity + 1, seats))
       end
     when 2
       train.remove_car
     else
-      car_action
+      add_car
     end
     puts "У поезда №#{train.number} теперь #{train.car_quantity} вагон(а/ов)."
     user_call
@@ -232,6 +237,38 @@ class RailRoad
     user_call
   end
 
+  def car_list
+    train = find_train
+    if train.type == :cargo
+      train.each_car do |car|
+        puts "Грузовой вагон №#{car.number}: " \
+                                  "свободный объем #{car.free_volume}, " \
+                                  "занятый объем #{car.occupied_volume}"
+      end
+    else
+      train.each_car do |car|
+        puts "Пассажирский вагон №#{car.number}: " \
+                                  "свободные места #{car.free_seats}, " \
+                                  "занятые места #{car.occupied_seats}"
+      end
+    end
+    user_call
+  end
+
+  def car_action
+    train = find_train
+    puts 'Введите номер вагона:'
+    number = gets.chomp.to_i
+    if train.type == :cargo
+      puts 'Укажите объем:'
+      volume = gets.chomp.to_i
+      train.find_car(number).take_volume(volume)
+    else
+      train.find_car(number).take_seat
+    end
+    user_call
+  end
+
   def find_train
     puts "\nВведите номер поезда:"
     number = gets.chomp
@@ -241,10 +278,10 @@ class RailRoad
   def seed
     trains.clear
     (0..4).each do |i|
-      trains.push(CargoTrain.new('0000' + i.to_s))
+      trains.push(CargoTrain.new("0000#{i}"))
     end
     (5..9).each do |i|
-      trains.push(PassengerTrain.new('0000' + i.to_s))
+      trains.push(PassengerTrain.new("0000#{i}"))
     end
     station_names = ['Измайловская', 'Партизанская', 'Семеновская',
                      'Электрозаводская', 'Бауманская', 'Парк Победы',

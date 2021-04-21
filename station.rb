@@ -45,4 +45,8 @@ class Station
   def passenger_trains
     train_list.select { |train| train.type == :passenger }
   end
+
+  def each_train(&block)
+    train_list.each(&block)
+  end
 end
