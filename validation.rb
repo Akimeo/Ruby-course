@@ -23,20 +23,20 @@ module Validation
       self.class.validators.each do |validator|
         name = validator[0]
         var = instance_variable_get("@#{name}".to_sym)
-        send "#{validator[1]}_validation".to_sym, name, var, *validator[2..-1]
+        send "validate_#{validator[1]}".to_sym, name, var, *validator[2..-1]
       end
     end
 
-    def presence_validation(name, var)
+    def validate_presence(name, var)
       raise "#{name} не должен быть nil или пустой строкой" if var.nil? ||
                                                                var == ''
     end
 
-    def format_validation(name, var, format)
+    def validate_format(name, var, format)
       raise "#{name} не соответсвует формату" if var !~ format
     end
 
-    def type_validation(name, var, type)
+    def validate_type(name, var, type)
       raise "#{name} должен быть #{type}" unless var.is_a? type
     end
 
