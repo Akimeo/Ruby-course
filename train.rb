@@ -3,10 +3,19 @@
 class Train
   include ProducerName
   include InstanceCounter
-  attr_reader :number, :type, :car_list
-  attr_accessor :speed
+  include Accessors
+  include Validation
 
   NUMBER_FORMAT = /^[a-z0-9]{3}-?[a-z0-9]{2}$/i.freeze
+
+  attr_reader :type, :car_list
+  attr_accessor :speed
+
+  strong_attr_accessor :number, String
+
+  validate :number, :presence
+  validate :number, :type, String
+  validate :number, :format, NUMBER_FORMAT
 
   @@train_list = []
 
@@ -21,18 +30,6 @@ class Train
     @car_list = []
     @@train_list.push(self)
     register_instance
-  end
-
-  def validate!
-    raise 'Номер поезда должен быть строкой' unless number.is_a? String
-    raise 'Номер поезда имеет некорректный формат' if number !~ NUMBER_FORMAT
-  end
-
-  def valid?
-    validate!
-    true
-  rescue StandardError
-    false
   end
 
   def stop

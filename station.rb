@@ -2,7 +2,14 @@
 
 class Station
   include InstanceCounter
-  attr_reader :name, :train_list
+  include Accessors
+  include Validation
+  attr_reader :train_list
+
+  attr_accessor_with_history :name
+
+  validate :name, :type, String
+  validate :name, :presence
 
   @@station_list = []
 
@@ -16,18 +23,6 @@ class Station
     @train_list = []
     @@station_list.push(self)
     register_instance
-  end
-
-  def validate!
-    raise 'Название станции должно быть строкой' unless name.is_a? String
-    raise 'Название станции не может быть пустой строкой' if name == ''
-  end
-
-  def valid?
-    validate!
-    true
-  rescue StandardError
-    false
   end
 
   def get_train(train)

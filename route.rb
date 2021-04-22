@@ -2,7 +2,11 @@
 
 class Route
   include InstanceCounter
+  include Validation
   attr_reader :initial, :terminal, :station_list
+
+  validate :initial, :type, Station
+  validate :terminal, :type, Station
 
   def initialize(initial, terminal)
     @initial = initial
@@ -10,18 +14,6 @@ class Route
     validate!
     @station_list = []
     register_instance
-  end
-
-  def validate!
-    raise 'Первый аргумент должен быть станцией' unless initial.is_a? Station
-    raise 'Второй аргумент должен быть станцией' unless terminal.is_a? Station
-  end
-
-  def valid?
-    validate!
-    true
-  rescue StandardError
-    false
   end
 
   def add_station(station)
